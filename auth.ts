@@ -1,10 +1,10 @@
-import NextAuth from "next-auth"
-import Figma from "next-auth/providers/figma"
-import { db } from "./lib/db"
-import { accounts, sessions, users, verificationTokens } from "@/lib/schema"
-import { DrizzleAdapter } from "@auth/drizzle-adapter"
+import NextAuth from "next-auth";
+import Figma from "next-auth/providers/figma";
+import { db } from "./lib/db";
+import { accounts, sessions, users, verificationTokens } from "@/lib/schema";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 
-export const {handlers, signIn, signOut, auth} = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
@@ -20,33 +20,31 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
   ],
 
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
 
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user}) {
       if (user) {
-        token.id = user.id
-        token.onboardingCompleted = user.onboardingCompleted 
+        token.id = user.id;
       }
-      return token
+      return token;
     },
 
     session({ session, token }) {
-      session.user.id = token.id as string
-      session.user.onboardingCompleted = token.onboardingCompleted as boolean
-      return session
+      session.user.id = token.id as string;
+      return session;
     },
 
     authorized: async ({ auth }) => {
-      return !!auth
-    }
+      return !!auth;
+    },
   },
 
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
   },
-})
+});
 
-export default auth
+export default auth;

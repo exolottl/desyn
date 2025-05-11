@@ -8,4 +8,12 @@
 .heading-highlight {
   color: var(--primary);
 }
-
+.btn-secondary {
+  background-color: var(--primary);
+}
+.page-transition {
+  opacity: 0;
+  background: black;
+  transform: translateY(40px);
+  filter: blur(12px);
+}
