@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { signIn } from "@/auth";
-import { geistMono, geistSans } from "@/app/layout";
+import { geistMono, geistSans } from "@/utils/fonts";
 import { Figma } from "@/component/logo/Figma";
 
 export default function SignIn() {
