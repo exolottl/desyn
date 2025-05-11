@@ -2,44 +2,37 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 
 export default auth(async (req) => {
-  // Ensure the user is authenticated
-  if (!req.auth) {
-    // If not authenticated, redirect to login
-    if (req.nextUrl.pathname !== "/login") {
-      const loginUrl = new URL("/login", req.nextUrl.origin);
-      return Response.redirect(loginUrl);
-    }
+  const userId = req.auth?.user.id;
+
+  if (!userId && req.nextUrl.pathname !== "/login") {
+    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
   }
 
-  // Retrieve the session and user ID
-  const session = await auth();
-  const userId = session?.user.id;
+  const user = await db
+    .selectDistinct({
+      onboardingCompleted: users.onboardingCompleted,
+    })
+    .from(users)
+    .where(eq(users.id, userId as string))
+    .limit(1);
 
-  // If no session or no user ID, return unauthorized
-  if (!userId) {
-    return Response.redirect(new URL("/login", req.nextUrl.origin));
+  if (!user || user.length === 0) {
+    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
   }
 
-  const user = await db.selectDistinct({
-    onboardingCompleted: users.onboardingCompleted
-  }).from(users).where(eq(users.id, userId)).limit(1);
-  console.log(user)
-  if (!user[0]) {
-    return Response.redirect(new URL("/login", req.nextUrl.origin));
-  }
-
-  const onboardingCompleted = user[0].onboardingCompleted;
+  const { onboardingCompleted } = user[0];
 
   if (!onboardingCompleted && req.nextUrl.pathname !== "/onboarding") {
-    const onboardingUrl = new URL("/onboarding", req.nextUrl.origin);
-    return Response.redirect(onboardingUrl);
+    return NextResponse.redirect(new URL("/onboarding", req.nextUrl.origin));
   }
 
+  return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"], // Exclude static files and API routes
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
 
