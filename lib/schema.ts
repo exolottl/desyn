@@ -1,6 +1,11 @@
-import { integer, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core"
-import type { AdapterAccountType } from "next-auth/adapters"
- 
+import { boolean } from "drizzle-orm/gel-core";
+import {
+  integer,
+  sqliteTable,
+  text,
+  primaryKey,
+} from "drizzle-orm/sqlite-core";
+import type { AdapterAccountType } from "next-auth/adapters";
 export const users = sqliteTable("user", {
   id: text("id")
     .primaryKey()
@@ -9,8 +14,12 @@ export const users = sqliteTable("user", {
   email: text("email").unique(),
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
-})
- 
+  onboardingCompleted: integer("onboardingCompleted", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  interest: text("interests").default('[]')
+});
+
 export const accounts = sqliteTable(
   "account",
   {
@@ -32,17 +41,17 @@ export const accounts = sqliteTable(
     compoundKey: primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-  })
-)
- 
+  }),
+);
+
 export const sessions = sqliteTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
-})
- 
+});
+
 export const verificationTokens = sqliteTable(
   "verificationToken",
   {
@@ -54,9 +63,9 @@ export const verificationTokens = sqliteTable(
     compositePk: primaryKey({
       columns: [verificationToken.identifier, verificationToken.token],
     }),
-  })
-)
- 
+  }),
+);
+
 export const authenticators = sqliteTable(
   "authenticator",
   {
@@ -77,5 +86,5 @@ export const authenticators = sqliteTable(
     compositePK: primaryKey({
       columns: [authenticator.userId, authenticator.credentialID],
     }),
-  })
-)
+  }),
+);
