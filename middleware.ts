@@ -1,38 +1,34 @@
-import { auth } from "@/auth";
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { auth } from "@/auth"
+import { db } from "./lib/db"
+import { eq } from "drizzle-orm"
+import { users } from "./lib/schema"
 
 export default auth(async (req) => {
-  const userId = req.auth?.user.id;
+ if (!req.auth && req.nextUrl.pathname !== "/login") {
+   const newUrl = new URL("/login", req.nextUrl.origin)
+   return Response.redirect(newUrl)
+ }
+ 
+ if (!req.auth) return
 
-  if (!userId && req.nextUrl.pathname !== "/login") {
-    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
-  }
-
-  const user = await db
-    .selectDistinct({
-      onboardingCompleted: users.onboardingCompleted,
-    })
-    .from(users)
-    .where(eq(users.id, userId as string))
-    .limit(1);
-
-  if (!user || user.length === 0) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
-  }
-
-  const { onboardingCompleted } = user[0];
-
-  if (!onboardingCompleted && req.nextUrl.pathname !== "/onboarding") {
-    return NextResponse.redirect(new URL("/onboarding", req.nextUrl.origin));
-  }
-
-  return NextResponse.next();
-});
+ const userId = req.auth.user.id
+ 
+ const user = await db.select({
+   onboardingCompleted: users.onboardingCompleted
+ })
+ .from(users)
+ .where(eq(users.id, userId))
+ .get()
+ 
+  console.log(user)
+ if (!user?.onboardingCompleted) {
+   if (req.nextUrl.pathname !== "/onboarding") {
+     const newUrl = new URL("/onboarding", req.nextUrl.origin)
+     return Response.redirect(newUrl)
+   }
+ }
+})
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-};
-
+ matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+}
