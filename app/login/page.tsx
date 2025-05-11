@@ -14,7 +14,7 @@ export default function SignIn() {
     >
       {/* Header */}
       <div className="m-6">
-        <Image src={"logo.svg"} alt={"image"} width={66} height={66} />
+        <Image src={"https://res.cloudinary.com/dnzvcfegj/image/upload/v1746968887/logo_q1ipws.svg"} alt={"image"} width={66} height={66} />
         <div className={`mt-4 ${geistMono.className}`}>
           <h1 className="text-5xl">Desyn.</h1>
           <h1 className="text-5xl">Reflect.</h1>
