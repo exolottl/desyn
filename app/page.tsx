@@ -1,16 +1,14 @@
+import { signOutAction } from "./action";
 
-import { signIn } from "@/auth"
-import { Button } from "@/components/ui/button"
- 
-export default function SignIn() {
+export default function Home() {
   return (
-    <form
-      action={async () => {
-        "use server"
-        await signIn("figma")
-      }}
-    >
-      <Button className="bg-secondary" type="submit">Signin with Figma</Button>
-    </form>
-  )
-} 
+    <div>
+      welcome to desyn
+
+      <form action={signOutAction}>
+        <button type="submit">sign out</button>
+      </form>
+    </div>
+  );
+}
+
