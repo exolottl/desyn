@@ -10,7 +10,7 @@ export default function SignIn() {
         "use server";
         await signIn("figma");
       }}
-      className="pt-16 flex flex-col items-stretch min-h-screen justify-between"
+      className="pt-8 flex flex-col items-stretch min-h-screen justify-between"
     >
       {/* Header */}
       <div className="m-6">
