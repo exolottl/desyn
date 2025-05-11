@@ -53,7 +53,7 @@ export default function FocusSelection() {
         </h1>
 
         <p className={`mt-4 text-gray-600 ${geistSans.className}`}>
-          We'll tailor nudges, insights, and challenges around your goals.
+          We&#39;ll tailor nudges, insights, and challenges around your goals.
         </p>
       </div>
 
