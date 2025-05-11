@@ -49,7 +49,7 @@ export default function FocusSelection() {
       <div className="m-6">
         <h1 className={`text-4xl ${geistSans.className}`}>
           What are you{" "}
-          <span className="heading-highlight font-semibold">focusing</span> on?
+          <span className="heading-highlight font-[400]">focusing</span> on?
         </h1>
 
         <p className={`mt-4 text-gray-600 ${geistSans.className}`}>
